@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Example</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1EOalxRUqO4zGvUaL8AWzANKMHeJJGRs",
+      authDomain: "kekhaithongtin.firebaseapp.com",
+      databaseURL: "https://kekhaithongtin-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "kekhaithongtin",
+      storageBucket: "kekhaithongtin.appspot.com",
+      messagingSenderId: "297940277895",
+      appId: "1:297940277895:web:88509c4d52e94488117622",
+      measurementId: "G-90C3VQCH0M"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    window.onload = function() {
+      const provinceSelect = document.getElementById('provinceSelect');
+      database.ref().on('value', (snapshot) => {
+        const data = snapshot.val();
+        provinceSelect.innerHTML = '<option value="">Chọn tỉnh/thành phố</option>';
+        for (const province in data) {
+          if (data.hasOwnProperty(province)) {
+            const option = document.createElement('option');
+            option.value = province;
+            option.textContent = province;
+            provinceSelect.appendChild(option);
+          }
+        }
+      });
+
+      provinceSelect.addEventListener('change', (event) => {
+        const province = event.target.value;
+        const districtSelect = document.getElementById('districtSelect');
+        districtSelect.innerHTML = '<option value="">Chọn huyện/quận</option>';
+        if (province) {
+          database.ref(province).on('value', (snapshot) => {
+            const data = snapshot.val();
+            for (const district in data) {
+              if (data.hasOwnProperty(district)) {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+              }
+            }
+          });
+        }
+      });
+
+      document.getElementById('districtSelect').addEventListener('change', (event) => {
+        const province = document.getElementById('provinceSelect').value;
+        const district = event.target.value;
+        const wardSelect = document.getElementById('wardSelect');
+        wardSelect.innerHTML = '<option value="">Chọn xã/phường</option>';
+        if (district) {
+          database.ref(`${province}/${district}`).on('value', (snapshot) => {
+            const data = snapshot.val();
+            for (const key in data) {
+              if (data.hasOwnProperty(key)) {
+                const option = document.createElement('option');
+                option.value = data[key];
+                option.textContent = data[key];
+                wardSelect.appendChild(option);
+              }
+            }
+          });
+        }
+      });
+    };
+  </script>
+</head>
+<body>
+  <select id="provinceSelect">
+    <option value="">Chọn tỉnh/thành phố</option>
+  </select>
+  <select id="districtSelect">
+    <option value="">Chọn huyện/quận</option>
+  </select>
+  <select id="wardSelect">
+    <option value="">Chọn xã/phường</option>
+  </select>
+</body>
+</html>
