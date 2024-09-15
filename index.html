@@ -55,6 +55,40 @@
               }
             }
           });
+
+          document.getElementById('submitButton').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const studentId = document.getElementById('studentId').value;
+            const province = provinceSelect.value;
+            const district = districtSelect.value;
+            const ward = wardSelect.value;
+
+            if (name && studentId && province && district && ward) {
+              const userData = {
+                time: new Date().toISOString(),
+                class: '', // Thêm thông tin lớp nếu cần
+                studentId: studentId,
+                name: name,
+                province: province,
+                district: district,
+                ward: ward,
+                address: '' // Thêm thông tin số nhà nếu cần
+              };
+
+              fetch('https://script.google.com/macros/s/AKfycbwGcrsfgBPJ-xvyAH-nvRyyKWo9O-2Wt4nqPEIUFhXzzxwzHlfNBJjJGqy-wKrxHjJcCg/exec', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+              })
+              .then(response => response.text())
+              .then(result => alert('Dữ liệu đã được lưu thành công!'))
+              .catch(error => console.error('Lỗi khi gửi dữ liệu:', error));
+            } else {
+              alert('Vui lòng điền đầy đủ thông tin!');
+            }
+          });
         })
         .catch(error => console.error('Lỗi khi tải dữ liệu:', error));
     };
@@ -82,6 +116,9 @@
   <select id="wardSelect">
     <option value="">Chọn xã/phường</option>
   </select>
+  <br>
+  <label for="address">Số nhà/Thôn/Tổ/Xóm:</label>
+  <input type="text" id="address" placeholder="Nhập số nhà/Thôn/Tổ/Xóm">
   <br>
   <button id="submitButton">Gửi</button>
 </body>
