@@ -7,12 +7,14 @@
   <script>
     window.onload = function() {
       const provinceSelect = document.getElementById('provinceSelect');
+      const districtSelect = document.getElementById('districtSelect');
+      const wardSelect = document.getElementById('wardSelect');
       const jsonUrl = 'https://raw.githubusercontent.com/Lusina1923/address-data/main/locationData.json'; // URL file JSON từ GitHub
 
       fetch(jsonUrl)
         .then(response => response.json())
         .then(data => {
-          provinceSelect.innerHTML = '<option value="">Chọn tỉnh/thành phố</option>';
+          provinceSelect.innerHTML = '<option value="">Chọn tỉnh/ Athành phố</option>';
           for (const province in data) {
             if (data.hasOwnProperty(province)) {
               const option = document.createElement('option');
@@ -21,77 +23,40 @@
               provinceSelect.appendChild(option);
             }
           }
+
+          provinceSelect.addEventListener('change', (event) => {
+            const province = event.target.value;
+            districtSelect.innerHTML = '<option value="">Chọn huyện/quận</option>';
+            wardSelect.innerHTML = '<option value="">Chọn xã/phường</option>';
+            if (province && data[province]) {
+              const districts = data[province];
+              for (const district in districts) {
+                if (districts.hasOwnProperty(district)) {
+                  const option = document.createElement('option');
+                  option.value = district;
+                  option.textContent = district;
+                  districtSelect.appendChild(option);
+                }
+              }
+            }
+          });
+
+          districtSelect.addEventListener('change', (event) => {
+            const province = provinceSelect.value;
+            const district = event.target.value;
+            wardSelect.innerHTML = '<option value="">Chọn xã/phường</option>';
+            if (district && data[province] && data[province][district]) {
+              const wards = data[province][district];
+              for (const ward of wards) {
+                const option = document.createElement('option');
+                option.value = ward;
+                option.textContent = ward;
+                wardSelect.appendChild(option);
+              }
+            }
+          });
         })
         .catch(error => console.error('Lỗi khi tải dữ liệu:', error));
-
-      provinceSelect.addEventListener('change', (event) => {
-        const province = event.target.value;
-        const districtSelect = document.getElementById('districtSelect');
-        districtSelect.innerHTML = '<option value="">Chọn huyện/quận</option>';
-        if (province) {
-          const districts = data[province];
-          for (const district in districts) {
-            if (districts.hasOwnProperty(district)) {
-              const option = document.createElement('option');
-              option.value = district;
-              option.textContent = district;
-              districtSelect.appendChild(option);
-            }
-          }
-        }
-      });
-
-      document.getElementById('districtSelect').addEventListener('change', (event) => {
-        const province = document.getElementById('provinceSelect').value;
-        const district = event.target.value;
-        const wardSelect = document.getElementById('wardSelect');
-        wardSelect.innerHTML = '<option value="">Chọn xã/phường</option>';
-        if (district) {
-          const wards = data[province][district];
-          for (const ward of wards) {
-            const option = document.createElement('option');
-            option.value = ward;
-            option.textContent = ward;
-            wardSelect.appendChild(option);
-          }
-        }
-      });
-
-      document.getElementById('submitButton').addEventListener('click', () => {
-        const name = document.getElementById('name').value;
-        const studentId = document.getElementById('studentId').value;
-        const province = document.getElementById('provinceSelect').value;
-        const district = document.getElementById('districtSelect').value;
-        const ward = document.getElementById('wardSelect').value;
-
-        if (name && studentId && province && district && ward) {
-          const data = {
-            name: name,
-            studentId: studentId,
-            address: {
-              province: province,
-              district: district,
-              ward: ward
-            }
-          };
-
-          // Push data to Firebase
-          firebase.database().ref('userData').push(data)
-            .then(() => {
-              alert('Dữ liệu đã được lưu thành công!');
-              document.getElementById('name').value = '';
-              document.getElementById('studentId').value = '';
-              provinceSelect.value = '';
-              districtSelect.innerHTML = '<option value="">Chọn huyện/quận</option>';
-              wardSelect.innerHTML = '<option value="">Chọn xã/phường</option>';
-            })
-            .catch(error => {
-              console.error('Lỗi khi lưu dữ liệu:', error);
-            });
-        } else {
-          alert('Vui lòng điền đầy đủ thông tin.');
-        }
-      });
     };
   </script>
 </head>
