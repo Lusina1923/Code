@@ -4,23 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dropdown Example</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD1EOalxRUqO4zGvUaL8AWzANKMHeJJGRs",
-      authDomain: "kekhaithongtin.firebaseapp.com",
-      databaseURL: "https://kekhaithongtin-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "kekhaithongtin",
-      storageBucket: "kekhaithongtin.appspot.com",
-      messagingSenderId: "297940277895",
-      appId: "1:297940277895:web:88509c4d52e94488117622",
-      measurementId: "G-90C3VQCH0M"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
     window.onload = function() {
       const provinceSelect = document.getElementById('provinceSelect');
       const districtSelect = document.getElementById('districtSelect');
@@ -69,31 +53,6 @@
                 option.textContent = ward;
                 wardSelect.appendChild(option);
               }
-            }
-          });
-
-          document.getElementById('submitButton').addEventListener('click', () => {
-            const name = document.getElementById('name').value;
-            const studentId = document.getElementById('studentId').value;
-            const province = provinceSelect.value;
-            const district = districtSelect.value;
-            const ward = wardSelect.value;
-
-            if (name && studentId && province && district && ward) {
-              const userData = {
-                name: name,
-                studentId: studentId,
-                province: province,
-                district: district,
-                ward: ward
-              };
-
-              const newRecordRef = database.ref('records').push();
-              newRecordRef.set(userData)
-                .then(() => alert('Dữ liệu đã được lưu thành công!'))
-                .catch(error => console.error('Lỗi khi lưu dữ liệu:', error));
-            } else {
-              alert('Vui lòng điền đầy đủ thông tin!');
             }
           });
         })
