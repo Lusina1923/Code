@@ -59,23 +59,24 @@
           document.getElementById('submitButton').addEventListener('click', () => {
             const name = document.getElementById('name').value;
             const studentId = document.getElementById('studentId').value;
+            const classInput = document.getElementById('class').value;
+            const address = document.getElementById('address').value;
             const province = provinceSelect.value;
             const district = districtSelect.value;
             const ward = wardSelect.value;
 
-            if (name && studentId && province && district && ward) {
+            if (name && studentId && classInput && province && district && ward && address) {
               const userData = {
-                time: new Date().toISOString(),
-                class: '', // Thêm thông tin lớp nếu cần
-                studentId: studentId,
                 name: name,
+                studentId: studentId,
+                class: classInput,
                 province: province,
                 district: district,
                 ward: ward,
-                address: '' // Thêm thông tin số nhà nếu cần
+                address: address
               };
 
-              fetch('https://script.google.com/macros/s/AKfycbwGcrsfgBPJ-xvyAH-nvRyyKWo9O-2Wt4nqPEIUFhXzzxwzHlfNBJjJGqy-wKrxHjJcCg/exec', {
+              fetch('https://script.google.com/macros/s/AKfycbxonXvNkiSqSlpX8vt0djtN33xLDk6y1Cjng-FWJjrVO2XBgqvX0QSEw1ORrdZopjk4Iw/exec', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -102,6 +103,12 @@
   <label for="studentId">Mã sinh viên:</label>
   <input type="text" id="studentId" placeholder="Nhập mã sinh viên">
   <br>
+  <label for="class">Lớp:</label>
+  <input type="text" id="class" placeholder="Nhập a lớp">
+  <br>
+  <label for="address">Số nhà/Thôn/Tổ/Xóm:</label>
+  <input type="text" id="address" placeholder="Nhập số nhà/thôn/tổ/xóm">
+  <br>
   <label for="provinceSelect">Tỉnh/Thành phố:</label>
   <select id="provinceSelect">
     <option value="">Chọn tỉnh/thành phố</option>
@@ -116,9 +123,6 @@
   <select id="wardSelect">
     <option value="">Chọn xã/phường</option>
   </select>
-  <br>
-  <label for="address">Số nhà/Thôn/Tổ/Xóm:</label>
-  <input type="text" id="address" placeholder="Nhập số nhà/Thôn/Tổ/Xóm">
   <br>
   <button id="submitButton">Gửi</button>
 </body>
